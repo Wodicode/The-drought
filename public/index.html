@@ -7,32 +7,30 @@
   <meta name="description" content="How long have Manchester United and Chelsea gone without winning the Premier League?" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:       #0B0F1A;
-      --surface:  #111827;
-      --surface2: #1a2235;
-      --border:   rgba(255,255,255,0.07);
-      --text:     #F0F4FF;
-      --muted:    #8B95B0;
-      --dim:      #4A5470;
+      --bg:       #F2F2F7;
+      --surface:  #FFFFFF;
+      --surface2: #F2F2F7;
+      --border:   rgba(0,0,0,0.08);
+      --text:     #111111;
+      --muted:    #555555;
+      --dim:      #999999;
 
       --utd-red:  #DA020B;
       --utd-gold: #FFE500;
       --che-blue: #034694;
-      --che-sky:  #68B6E8;
+      --che-sky:  #3A8FDB;
 
-      --spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
-      --expo:     cubic-bezier(0.16, 1, 0.3, 1);
+      --expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Poppins', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100dvh;
@@ -44,57 +42,24 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* grid texture */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-
     /* ── Page header ─────────────────────────────────────────────── */
     .page-header {
-      position: relative; z-index: 1;
       text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 40px;
       animation: fadeDown 0.6s var(--expo) both;
     }
-    .page-header .eyebrow {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 10px;
-    }
-    .page-header h1 {
-      font-family: 'Syne', system-ui, sans-serif;
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 800;
-      line-height: 1.1;
-      color: var(--text);
-    }
-    .page-header h1 span { color: var(--dim); }
-    .page-header .sub {
-      margin-top: 10px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    /* ── Live indicator ──────────────────────────────────────────── */
     .live-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      margin-bottom: 18px;
-      background: rgba(255,255,255,0.04);
+      margin-bottom: 16px;
+      background: #fff;
       border: 1px solid var(--border);
       border-radius: 100px;
-      padding: 4px 12px;
+      padding: 4px 14px;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       color: var(--muted);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     .live-dot {
       width: 7px; height: 7px;
@@ -102,15 +67,28 @@
       background: #22c55e;
       animation: livePulse 1.4s ease-in-out infinite;
     }
+    .page-header h1 {
+      font-size: clamp(28px, 5vw, 46px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .page-header h1 span { color: var(--dim); }
+    .page-header .sub {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+    }
 
     /* ── Cards grid ──────────────────────────────────────────────── */
     .cards {
-      position: relative; z-index: 1;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
       gap: 20px;
       width: 100%;
-      max-width: 900px;
+      max-width: 880px;
     }
 
     /* ── Club card ───────────────────────────────────────────────── */
@@ -118,97 +96,76 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 32px 28px 28px;
+      padding: 0 0 24px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 0;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
       animation: fadeUp 0.55s var(--expo) both;
     }
     .card:nth-child(2) { animation-delay: 100ms; }
 
     /* top colour band */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      border-radius: 20px 20px 0 0;
+    .card-band {
+      height: 4px;
+      width: 100%;
+      flex-shrink: 0;
     }
-    .card.utd::before { background: linear-gradient(90deg, var(--utd-red), var(--utd-gold)); }
-    .card.che::before { background: linear-gradient(90deg, var(--che-blue), var(--che-sky)); }
-
-    /* ambient glow */
-    .card.utd::after {
-      content: '';
-      position: absolute;
-      top: -80px; left: -60px;
-      width: 260px; height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(218,2,11,0.10) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .card.che::after {
-      content: '';
-      position: absolute;
-      top: -80px; right: -60px;
-      width: 260px; height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(3,70,148,0.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
+    .card.utd .card-band { background: linear-gradient(90deg, var(--utd-red), var(--utd-gold)); }
+    .card.che .card-band { background: linear-gradient(90deg, var(--che-blue), var(--che-sky)); }
 
     /* ── Card header ─────────────────────────────────────────────── */
     .card-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 14px;
-      position: relative; z-index: 1;
+      padding: 24px 24px 0;
     }
     .club-badge {
-      width: 54px; height: 54px;
+      width: 52px; height: 52px;
       border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      font-size: 28px;
-      position: relative;
+      font-size: 26px;
     }
-    .card.utd .club-badge { background: rgba(218,2,11,0.15); border: 1px solid rgba(218,2,11,0.25); }
-    .card.che .club-badge { background: rgba(3,70,148,0.18); border: 1px solid rgba(3,70,148,0.3); }
+    .card.utd .club-badge { background: rgba(218,2,11,0.08); border: 1px solid rgba(218,2,11,0.15); }
+    .card.che .club-badge { background: rgba(3,70,148,0.08); border: 1px solid rgba(3,70,148,0.15); }
 
-    .club-info { flex: 1; }
+    .club-info { flex: 1; min-width: 0; }
     .club-name {
-      font-family: 'Syne', system-ui, sans-serif;
       font-size: 18px;
-      font-weight: 800;
-      line-height: 1.15;
+      font-weight: 700;
+      line-height: 1.2;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .club-league {
       font-size: 12px;
+      font-weight: 400;
       color: var(--dim);
-      margin-top: 2px;
+      margin-top: 1px;
     }
-
     .last-title-pill {
-      display: inline-flex; align-items: center; gap: 5px;
-      border-radius: 8px;
-      padding: 4px 10px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 7px;
+      padding: 3px 9px;
       font-size: 11px;
       font-weight: 600;
       white-space: nowrap;
-      align-self: flex-start;
+      margin-top: 7px;
     }
     .card.utd .last-title-pill {
-      background: rgba(218,2,11,0.12);
-      border: 1px solid rgba(218,2,11,0.22);
-      color: #f87171;
+      background: rgba(218,2,11,0.08);
+      color: var(--utd-red);
     }
     .card.che .last-title-pill {
-      background: rgba(3,70,148,0.15);
-      border: 1px solid rgba(104,182,232,0.25);
-      color: var(--che-sky);
+      background: rgba(3,70,148,0.08);
+      color: var(--che-blue);
     }
 
     /* ── Counter grid ────────────────────────────────────────────── */
@@ -216,7 +173,7 @@
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 6px;
-      position: relative; z-index: 1;
+      margin: 20px 24px 0;
     }
 
     .counter-cell {
@@ -227,95 +184,100 @@
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 14px 6px 10px;
+      padding: 12px 4px 10px;
       position: relative;
       overflow: hidden;
     }
 
-    .counter-cell::before {
+    /* bottom accent line */
+    .counter-cell::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 2px;
       border-radius: 0 0 12px 12px;
-      opacity: 0.5;
     }
-    .card.utd .counter-cell::before { background: var(--utd-red); }
-    .card.che .counter-cell::before { background: var(--che-blue); }
+    .card.utd .counter-cell::after { background: rgba(218,2,11,0.3); }
+    .card.che .counter-cell::after { background: rgba(3,70,148,0.3); }
+    .card.utd .seconds-cell::after { background: var(--utd-red); }
+    .card.che .seconds-cell::after { background: var(--che-blue); }
 
     .counter-value {
-      font-family: 'DM Mono', monospace;
-      font-size: clamp(22px, 4vw, 32px);
-      font-weight: 500;
+      font-size: clamp(20px, 3.5vw, 30px);
+      font-weight: 700;
       line-height: 1;
       color: var(--text);
       letter-spacing: -0.02em;
-      min-width: 2ch;
       text-align: center;
-      transition: color 0.15s ease;
     }
-    .counter-value.tick { color: #fff; }
-
-    .card.utd .seconds-cell .counter-value { color: #f87171; }
-    .card.che .seconds-cell .counter-value { color: var(--che-sky); }
+    .card.utd .seconds-cell .counter-value { color: var(--utd-red); }
+    .card.che .seconds-cell .counter-value { color: var(--che-blue); }
 
     .counter-label {
       font-size: 9px;
       font-weight: 600;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
       color: var(--dim);
     }
 
-    /* ── Footer line ─────────────────────────────────────────────── */
+    /* ── Card footer ─────────────────────────────────────────────── */
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid var(--border);
+      gap: 12px;
+      margin: 16px 24px 0;
       padding-top: 16px;
-      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
     }
     .card-footer .hint {
       font-size: 11px;
+      font-weight: 400;
       color: var(--dim);
+      flex: 1;
+      min-width: 0;
     }
-    .card-footer .hint strong { color: var(--muted); }
+    .card-footer .hint strong {
+      font-weight: 600;
+      color: var(--muted);
+    }
     .card-footer .tally {
-      font-family: 'DM Mono', monospace;
       font-size: 11px;
+      font-weight: 500;
       color: var(--dim);
+      white-space: nowrap;
     }
 
     /* ── Page footer ─────────────────────────────────────────────── */
     .page-footer {
-      position: relative; z-index: 1;
-      margin-top: 36px;
+      margin-top: 32px;
       text-align: center;
       font-size: 11px;
+      font-weight: 400;
       color: var(--dim);
     }
 
     /* ── Animations ──────────────────────────────────────────────── */
     @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-14px); }
+      from { opacity: 0; transform: translateY(-12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes livePulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
-      50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+      50%       { opacity: 0.75; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
     }
     @keyframes numFlip {
       0%   { transform: translateY(0);    opacity: 1; }
-      40%  { transform: translateY(-6px); opacity: 0; }
-      60%  { transform: translateY(6px);  opacity: 0; }
+      40%  { transform: translateY(-5px); opacity: 0; }
+      60%  { transform: translateY(5px);  opacity: 0; }
       100% { transform: translateY(0);    opacity: 1; }
     }
-    .flip { animation: numFlip 0.22s ease both; }
+    .flip { animation: numFlip 0.2s ease both; }
   </style>
 </head>
 <body>
@@ -333,13 +295,14 @@
 
     <!-- Manchester United -->
     <div class="card utd">
+      <div class="card-band"></div>
       <div class="card-header">
         <div class="club-badge">🔴</div>
         <div class="club-info">
           <div class="club-name">Manchester United</div>
           <div class="club-league">Premier League · 20× champions</div>
+          <div class="last-title-pill">Last title: 2012–13</div>
         </div>
-        <div class="last-title-pill">Last: 2012–13</div>
       </div>
 
       <div class="counter-grid">
@@ -373,13 +336,14 @@
 
     <!-- Chelsea -->
     <div class="card che">
+      <div class="card-band"></div>
       <div class="card-header">
         <div class="club-badge">🔵</div>
         <div class="club-info">
           <div class="club-name">Chelsea</div>
           <div class="club-league">Premier League · 6× champions</div>
+          <div class="last-title-pill">Last title: 2016–17</div>
         </div>
-        <div class="last-title-pill">Last: 2016–17</div>
       </div>
 
       <div class="counter-grid">
@@ -418,7 +382,6 @@
   </footer>
 
   <script>
-    // Title-clinch dates (midnight UTC on the day they were confirmed champions)
     const UTD_DATE = new Date('2013-04-22T00:00:00Z');
     const CHE_DATE = new Date('2017-05-12T00:00:00Z');
 
@@ -427,7 +390,6 @@
       const s = total % 60; total = Math.floor(total / 60);
       const m = total % 60; total = Math.floor(total / 60);
       const h = total % 24; total = Math.floor(total / 24);
-      // approximate years (365.25 days) then remaining days
       const y = Math.floor(total / 365.25);
       const d = Math.floor(total - y * 365.25);
       return { y, d, h, m, s, totalSecs: Math.floor(ms / 1000) };
@@ -435,31 +397,27 @@
 
     function pad(n, w) { return String(n).padStart(w, '0'); }
 
-    function setEl(id, val, prevVal) {
+    function setEl(id, val) {
       const el = document.getElementById(id);
       if (!el) return;
       const next = String(val);
       if (el.textContent !== next) {
         el.textContent = next;
         el.classList.remove('flip');
-        void el.offsetWidth; // reflow
+        void el.offsetWidth;
         el.classList.add('flip');
       }
     }
 
     function updateCard(prefix, sinceDate) {
-      const now  = new Date();
-      const diff = now - sinceDate;
-      const { y, d, h, m, s, totalSecs } = decompose(diff);
-
+      const { y, d, h, m, s, totalSecs } = decompose(new Date() - sinceDate);
       setEl(`${prefix}-y`, pad(y, 2));
       setEl(`${prefix}-d`, pad(d, 3));
       setEl(`${prefix}-h`, pad(h, 2));
       setEl(`${prefix}-m`, pad(m, 2));
       setEl(`${prefix}-s`, pad(s, 2));
-
       const el = document.getElementById(`${prefix}-total`);
-      if (el) el.textContent = totalSecs.toLocaleString() + ' sec total';
+      if (el) el.textContent = totalSecs.toLocaleString() + 's total';
     }
 
     function tick() {
