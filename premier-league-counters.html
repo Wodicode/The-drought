@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premier League Drought Counters</title>
+  <meta name="description" content="How long have Manchester United and Chelsea gone without winning the Premier League?" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:       #0B0F1A;
+      --surface:  #111827;
+      --surface2: #1a2235;
+      --border:   rgba(255,255,255,0.07);
+      --text:     #F0F4FF;
+      --muted:    #8B95B0;
+      --dim:      #4A5470;
+
+      --utd-red:  #DA020B;
+      --utd-gold: #FFE500;
+      --che-blue: #034694;
+      --che-sky:  #68B6E8;
+
+      --spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+      --expo:     cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* grid texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* ── Page header ─────────────────────────────────────────────── */
+    .page-header {
+      position: relative; z-index: 1;
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeDown 0.6s var(--expo) both;
+    }
+    .page-header .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 10px;
+    }
+    .page-header h1 {
+      font-family: 'Syne', system-ui, sans-serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+    }
+    .page-header h1 span { color: var(--dim); }
+    .page-header .sub {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── Live indicator ──────────────────────────────────────────── */
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .live-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: livePulse 1.4s ease-in-out infinite;
+    }
+
+    /* ── Cards grid ──────────────────────────────────────────────── */
+    .cards {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    /* ── Club card ───────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.55s var(--expo) both;
+    }
+    .card:nth-child(2) { animation-delay: 100ms; }
+
+    /* top colour band */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 20px 20px 0 0;
+    }
+    .card.utd::before { background: linear-gradient(90deg, var(--utd-red), var(--utd-gold)); }
+    .card.che::before { background: linear-gradient(90deg, var(--che-blue), var(--che-sky)); }
+
+    /* ambient glow */
+    .card.utd::after {
+      content: '';
+      position: absolute;
+      top: -80px; left: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(218,2,11,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card.che::after {
+      content: '';
+      position: absolute;
+      top: -80px; right: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(3,70,148,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Card header ─────────────────────────────────────────────── */
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative; z-index: 1;
+    }
+    .club-badge {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 28px;
+      position: relative;
+    }
+    .card.utd .club-badge { background: rgba(218,2,11,0.15); border: 1px solid rgba(218,2,11,0.25); }
+    .card.che .club-badge { background: rgba(3,70,148,0.18); border: 1px solid rgba(3,70,148,0.3); }
+
+    .club-info { flex: 1; }
+    .club-name {
+      font-family: 'Syne', system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text);
+    }
+    .club-league {
+      font-size: 12px;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+
+    .last-title-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+    .card.utd .last-title-pill {
+      background: rgba(218,2,11,0.12);
+      border: 1px solid rgba(218,2,11,0.22);
+      color: #f87171;
+    }
+    .card.che .last-title-pill {
+      background: rgba(3,70,148,0.15);
+      border: 1px solid rgba(104,182,232,0.25);
+      color: var(--che-sky);
+    }
+
+    /* ── Counter grid ────────────────────────────────────────────── */
+    .counter-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      position: relative; z-index: 1;
+    }
+
+    .counter-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 6px 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .counter-cell::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 0 0 12px 12px;
+      opacity: 0.5;
+    }
+    .card.utd .counter-cell::before { background: var(--utd-red); }
+    .card.che .counter-cell::before { background: var(--che-blue); }
+
+    .counter-value {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 500;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      min-width: 2ch;
+      text-align: center;
+      transition: color 0.15s ease;
+    }
+    .counter-value.tick { color: #fff; }
+
+    .card.utd .seconds-cell .counter-value { color: #f87171; }
+    .card.che .seconds-cell .counter-value { color: var(--che-sky); }
+
+    .counter-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    /* ── Footer line ─────────────────────────────────────────────── */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      position: relative; z-index: 1;
+    }
+    .card-footer .hint {
+      font-size: 11px;
+      color: var(--dim);
+    }
+    .card-footer .hint strong { color: var(--muted); }
+    .card-footer .tally {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    /* ── Page footer ─────────────────────────────────────────────── */
+    .page-footer {
+      position: relative; z-index: 1;
+      margin-top: 36px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--dim);
+    }
+
+    /* ── Animations ──────────────────────────────────────────────── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50%       { opacity: 0.7; box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+    }
+    @keyframes numFlip {
+      0%   { transform: translateY(0);    opacity: 1; }
+      40%  { transform: translateY(-6px); opacity: 0; }
+      60%  { transform: translateY(6px);  opacity: 0; }
+      100% { transform: translateY(0);    opacity: 1; }
+    }
+    .flip { animation: numFlip 0.22s ease both; }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      LIVE · updates every second
+    </div>
+    <h1>Premier League <span>Drought</span> Clock</h1>
+    <p class="sub">Time elapsed since each club last won the Premier League title</p>
+  </header>
+
+  <div class="cards">
+
+    <!-- Manchester United -->
+    <div class="card utd">
+      <div class="card-header">
+        <div class="club-badge">🔴</div>
+        <div class="club-info">
+          <div class="club-name">Manchester United</div>
+          <div class="club-league">Premier League · 20× champions</div>
+        </div>
+        <div class="last-title-pill">Last: 2012–13</div>
+      </div>
+
+      <div class="counter-grid">
+        <div class="counter-cell">
+          <span class="counter-value" id="utd-y">00</span>
+          <span class="counter-label">Years</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="utd-d">000</span>
+          <span class="counter-label">Days</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="utd-h">00</span>
+          <span class="counter-label">Hours</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="utd-m">00</span>
+          <span class="counter-label">Mins</span>
+        </div>
+        <div class="counter-cell seconds-cell">
+          <span class="counter-value" id="utd-s">00</span>
+          <span class="counter-label">Secs</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="hint">Clinched <strong>22 Apr 2013</strong> · Sir Alex Ferguson's last title</span>
+        <span class="tally" id="utd-total">—</span>
+      </div>
+    </div>
+
+    <!-- Chelsea -->
+    <div class="card che">
+      <div class="card-header">
+        <div class="club-badge">🔵</div>
+        <div class="club-info">
+          <div class="club-name">Chelsea</div>
+          <div class="club-league">Premier League · 6× champions</div>
+        </div>
+        <div class="last-title-pill">Last: 2016–17</div>
+      </div>
+
+      <div class="counter-grid">
+        <div class="counter-cell">
+          <span class="counter-value" id="che-y">00</span>
+          <span class="counter-label">Years</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="che-d">000</span>
+          <span class="counter-label">Days</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="che-h">00</span>
+          <span class="counter-label">Hours</span>
+        </div>
+        <div class="counter-cell">
+          <span class="counter-value" id="che-m">00</span>
+          <span class="counter-label">Mins</span>
+        </div>
+        <div class="counter-cell seconds-cell">
+          <span class="counter-value" id="che-s">00</span>
+          <span class="counter-label">Secs</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="hint">Clinched <strong>12 May 2017</strong> · Antonio Conte's only PL title</span>
+        <span class="tally" id="che-total">—</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="page-footer">
+    Counters start from the date each club clinched the title · times in your local timezone
+  </footer>
+
+  <script>
+    // Title-clinch dates (midnight UTC on the day they were confirmed champions)
+    const UTD_DATE = new Date('2013-04-22T00:00:00Z');
+    const CHE_DATE = new Date('2017-05-12T00:00:00Z');
+
+    function decompose(ms) {
+      let total = Math.floor(ms / 1000);
+      const s = total % 60; total = Math.floor(total / 60);
+      const m = total % 60; total = Math.floor(total / 60);
+      const h = total % 24; total = Math.floor(total / 24);
+      // approximate years (365.25 days) then remaining days
+      const y = Math.floor(total / 365.25);
+      const d = Math.floor(total - y * 365.25);
+      return { y, d, h, m, s, totalSecs: Math.floor(ms / 1000) };
+    }
+
+    function pad(n, w) { return String(n).padStart(w, '0'); }
+
+    function setEl(id, val, prevVal) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const next = String(val);
+      if (el.textContent !== next) {
+        el.textContent = next;
+        el.classList.remove('flip');
+        void el.offsetWidth; // reflow
+        el.classList.add('flip');
+      }
+    }
+
+    function updateCard(prefix, sinceDate) {
+      const now  = new Date();
+      const diff = now - sinceDate;
+      const { y, d, h, m, s, totalSecs } = decompose(diff);
+
+      setEl(`${prefix}-y`, pad(y, 2));
+      setEl(`${prefix}-d`, pad(d, 3));
+      setEl(`${prefix}-h`, pad(h, 2));
+      setEl(`${prefix}-m`, pad(m, 2));
+      setEl(`${prefix}-s`, pad(s, 2));
+
+      const el = document.getElementById(`${prefix}-total`);
+      if (el) el.textContent = totalSecs.toLocaleString() + ' sec total';
+    }
+
+    function tick() {
+      updateCard('utd', UTD_DATE);
+      updateCard('che', CHE_DATE);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
